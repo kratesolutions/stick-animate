@@ -1,0 +1,9 @@
+# Working + output folders (local test renders, not part of the skill)
+_work/
+_out/
+
+# OS / editor junk
+Thumbs.db
+.DS_Store
+desktop.ini
+*.tmp
