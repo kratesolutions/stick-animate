@@ -14,7 +14,7 @@ C:\Users\<you>\.claude\skills\stick-animate\SKILL.md
 In a terminal (PowerShell):
 
 ```
-git clone <REPO-URL> "$env:USERPROFILE\.claude\skills\stick-animate"
+git clone https://github.com/kratesolutions/stick-animate.git "$env:USERPROFILE\.claude\skills\stick-animate"
 ```
 
 Then open **`SETUP.md`** (or the "Start Here - Setup Guide" we sent) and follow it once to connect your
