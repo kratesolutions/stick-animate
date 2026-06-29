@@ -52,7 +52,9 @@ Pick a short kebab `slug` from the action, e.g. `angel-victory-jump`. Work in
    Then animate (the green stays flat). Then key it out:
    `scripts/chroma_key.ps1 -Video "<greenscreen.mp4>" -Out "<slug>_transparent_16x9.mov"` ->
    a transparent ProRes 4444 .mov that drops onto any slide/video. Deliver BOTH:
-   `<slug>_transparent_16x9.mov` (pre-keyed) AND `<slug>_greenscreen_16x9.mp4` (small, universal,
+   `<slug>_transparent_16x9.mov` (pre-keyed; already SILENT, the key drops the audio) AND
+   `<slug>_greenscreen_16x9.mp4`. ALWAYS write the green-screen mp4 with audio STRIPPED:
+   `ffmpeg -i "<raw model mp4>" -an -c:v copy "<slug>_greenscreen_16x9.mp4"` (small, universal,
    the client can key it in their own editor). chroma_key uses a GREEN-DOMINANCE key (alpha from how
    much green beats red and blue), so it is robust to the AI green screen being clouded/non-flat and
    needs no per-clip tuning. NEVER use a green accent (it would be keyed out); navy + warm accents
@@ -143,12 +145,19 @@ generate_video
   aspect_ratio: <aspect>         (generate natively in the requested aspect -> no letterbox)
   duration: per the model        (seedance1_5: 4/8/12; kling2_6: 5/10; veo3_1: 4/6/8; from defaultDurationSec, round to the model's nearest)
   + model params                 (kling2_6: sound:"off"; veo3_1: quality+variant from premiumModelParams)
-  generate_audio: false
+  generate_audio: false           (seedance + veo; KLING IGNORES this, it silences via sound:"off" above)
   declined_preset_id: <declinedPresetId from brand.json>
   prompt: <guardrail template, below, wrapped around the action line>
   medias: [{role:"start_image", value:<start media_id>}]
           (+ {role:"end_image", value:<end image job id>} only for a BIG move)
 ```
+- **ALWAYS SILENT (client rule).** These models generate native audio BY DEFAULT, and they only obey the
+  silence PARAMETER, never a prompt or a chat request. Saying "no audio" in the prompt or in chat does
+  NOTHING. So enforce silence two ways, every time: (1) pass the model's own off-flag on the call
+  (`generate_audio:false` for seedance/veo, `sound:"off"` for kling), AND (2) strip audio from every
+  delivered mp4 with `ffmpeg -i in.mp4 -an -c:v copy out.mp4` (the green-screen mp4 and any background/
+  scene mp4; the transparent .mov is already silent from the key). Clips are silent by design; the user
+  adds their own music in an editor.
 - If the response is a `preset_recommendation` notice instead of a job, retry the SAME call
   adding `declined_preset_id` set to the notice's `data.preset.id`.
 - Poll: `job_status { jobId:<id>, sync:true }` until `status` is `completed`. The MP4 is
