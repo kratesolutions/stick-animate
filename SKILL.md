@@ -34,7 +34,8 @@ first; every default below comes from it.
 - One action line, e.g. "does a slow victory jump, arms up".
 - Options (any omitted fall back to brand.json):
   - length: 3 to 10 seconds (default `defaultDurationSec`)
-  - aspect: `16:9` | `9:16` | `1:1` (default `defaultAspect`)
+  - aspect: LOCKED to `16:9` (client rule 2 below; brand.json `defaultAspect`). Do not offer or
+    render 9:16 / 1:1 unless the client explicitly changes the rule.
   - output: `scene` | `transparent` (default `defaultOutput`)
   - scene: a key from brand.json `scenes` (default plain backdrop)
 
@@ -73,8 +74,11 @@ Pick a short kebab `slug` from the action, e.g. `angel-victory-jump`. Work in
 ## Build complexity, model tier, and cost approval (decide BEFORE generating)
 Classify the build, pick the model tier, then decide whether to ask first.
 
-- **SIMPLE** = one figure, one whole-body action (wave, jump, run, the metaphor library), no effects,
-  default duration. -> `model` (Seedance 1.5 Pro, ~5cr). Just run it, no approval needed.
+- **SIMPLE** = one figure, one whole-body action (wave, jump, run), no effects, default duration.
+  -> `model` (Seedance 1.5 Pro, ~5cr). Just run it, no approval needed.
+- **LIBRARY RECIPE** = any recipes.json metaphor run as written. These are pre-validated multi-beat
+  builds and run on their own listed model (`kling2_6`, 5s, `sound:"off"`, ~5cr, 1080p). Preflight
+  `get_cost`, STATE the cost, and run - no approval wait needed at the listed model/duration/rolls.
 - **COMPLEX** = any of: 2+ figures/interaction, an effect (fire, smoke, explosion), a small fast object
   or projectile (a kicked or thrown ball), a precise payoff, or 8s+. -> `complexModel` (Kling 2.6,
   ~5cr, 1080p), pass `complexModelParams` (sound:"off"). **Seedance CANNOT animate a struck or launched
@@ -83,12 +87,13 @@ Classify the build, pick the model tier, then decide whether to ask first.
 - **PREMIUM** = a complex clip that needs the absolute cleanest result. -> `premiumModel` (Veo 3.1 full,
   ~22cr), pass `premiumModelParams` (quality:"high", variant). Escalation only, and always gated.
 
-**Cost-approval gate.** Before spending on anything COMPLEX or PREMIUM (or any single render whose
-`get_cost` >= `costGate.thresholdCredits`, or any `count:2`, or 8s+): preflight with `get_cost:true`,
-then tell the user the credit total AND the dollar figure on their plan (Starter ~$0.074/cr), warn that
-physics-heavy gags may need rerolls (more credits) and might not one-shot, and WAIT for explicit
-approval before generating. SIMPLE clips under the threshold just run. Never burn `count:2` on the
-premium model without approval.
+**Cost-approval gate.** Before spending on any NOVEL COMPLEX build, anything PREMIUM, any run whose
+TOTAL planned spend (including `count:2`/rolls) >= `costGate.thresholdCredits`, any 8s+ render, or any
+batch: preflight with `get_cost:true`, then tell the user the credit total AND the dollar figure on
+their plan (Starter ~$0.074/cr), warn that physics-heavy gags may need rerolls (more credits) and might
+not one-shot, and WAIT for explicit approval before generating. SIMPLE clips and LIBRARY RECIPES under
+the threshold just run (still state the preflighted cost). Never burn `count:2` on the premium model
+without approval.
 
 ## Pipeline
 
@@ -172,8 +177,8 @@ scripts/finish.ps1 -Video "<rawUrl>" -Out "_out/<slug>" -Slug "<slug>" `
   -Aspects "<comma list of any EXTRA aspects you also want>" -BgColor <backgroundColor> `
   -Logo "<logo path or none>" -LogoCorner <logoCorner> [-TrimSec <exact seconds, optional>]
 ```
-- You already generated the primary aspect natively; list only the additional aspects to
-  derive (finish pads to those with the clip's own sampled background, so no seam).
+- CLIENT RULE: 16:9 only, so leave `-Aspects` EMPTY (the machinery exists for other brands; do not
+  derive 9:16/1:1 for this client unless the rule is explicitly changed).
 - Logo: pass brand.json `logo` if the file exists, else `none`.
 - TrimSec: only when the user wants an exact length different from 4/8/12.
 
@@ -224,11 +229,14 @@ Wrap the user's action line exactly like this so the look stays flat and on-mode
 `recipes.json` holds ready-made visual metaphors for a teaching point (letting go, the climb,
 breaking chains, the lightbulb moment, the narrow gate, light of the world, and more), each with a
 scripture hook, accent color, model, aspect, duration, an auto-judge `beats` checklist, and a
-`rolls` hint. To run one: read the recipe, generate the start plate with `scenePrompt` +
-`globalImageStyle` (nano_banana_2), then animate with `motionPrompt` + `globalMotionStyle` on the
-recipe's `model`, following the single-start recipe. If the user names a theme ("make a 'breaking
-chains' clip", or "I'm teaching on letting go this week"), match it to a recipe. Use the recipe's
-`accent` as the only non-navy color. Add new recipes by appending to the file.
+`rolls` hint. All recipes run on `kling2_6` (5s, 1080p, ~5cr) - ALWAYS pass `sound:"off"` (Kling
+generates audio by default; client rule is silent) and strip the delivered mp4 with `-an` as usual.
+To run one: read the recipe, generate the start plate with `scenePrompt` + `globalImageStyle`
+(nano_banana_2), then animate with `motionPrompt` + `globalMotionStyle` on the recipe's `model`,
+following the single-start recipe. A recipe run as written is pre-validated: state the preflighted
+cost and run (see the LIBRARY RECIPE tier). If the user names a theme ("make a 'breaking chains'
+clip", or "I'm teaching on letting go this week"), match it to a recipe. Use the recipe's `accent`
+as the only non-navy color (warm only, never green). Add new recipes by appending to the file.
 
 ### Auto-judge (reliable one-shot)
 Never ship the first render blind. After generating:
@@ -252,8 +260,8 @@ or pick a figure from a sheet via segment_sheet).
 ### Polish
 - Caption: `scripts/caption.ps1 -Video <in> -Out <out> -Text "..." [-Position bottom|top]` burns a
   branded navy caption bar. Use `-Position top` when the subject sits low in frame. Off by default.
-- Aspect ratios: generate the PRIMARY aspect natively; for a second high-priority platform prefer a
-  native re-render over padding (`finish` still pads secondary aspects with the clip's own bg color).
+- Aspect ratios: this client is LOCKED to 16:9 (rule 2) - no secondary aspects. (For other brands the
+  machinery supports them: generate the primary natively, prefer a native re-render over padding.)
 - Resolution: for projector/slide crispness, optionally upscale the final via Higgsfield
   `upscale_video` (media_id = the video job id, to 1080p/2K) before `finish`. Costs a few credits.
 
@@ -267,7 +275,8 @@ or pick a figure from a sheet via segment_sheet).
 - If a request implies many clips (a whole sheet, a batch), confirm the credit total first.
 
 ## Output conventions
-- Finals: `_out/<slug>/<slug>_<aspect>.mp4` (e.g. `angel-victory-jump_9x16.mp4`).
+- Finals: `_out/<slug>/<slug>_16x9...` (e.g. `angel-victory-jump_greenscreen_16x9.mp4` +
+  `angel-victory-jump_transparent_16x9.mov`). Always 16:9 (client rule), always silent.
 - Always show the start frame before generating, and the QA sheet after.
 
 ## Troubleshooting

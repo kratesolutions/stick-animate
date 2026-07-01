@@ -1,5 +1,5 @@
 {
-  "_about": "Coaching-metaphor recipe library for Stick-Animate. Each recipe is a ready-to-run visual metaphor for a teaching point. To run one: generate the scene with `scenePrompt` (+ globalImageStyle) via nano_banana_2, then animate with `motionPrompt` (+ globalMotionStyle) on `model`, using the single-start-frame recipe. Use `rolls` (1 or 2) for the auto-judge pass and verify the `beats` are present (see SKILL.md > Auto-judge). `accent` is the one non-navy color allowed in that clip. `scriptureHook` is an optional tie-in for a Christian-coaching audience.",
+  "_about": "Coaching-metaphor recipe library for Stick-Animate. Each recipe is a ready-to-run visual metaphor for a teaching point. To run one: generate the scene with `scenePrompt` (+ globalImageStyle) via nano_banana_2, then animate with `motionPrompt` (+ globalMotionStyle) on `model`, using the single-start-frame recipe. All recipes run on kling2_6 (the validated Kling lineage, 1080p, 5s): ALWAYS pass sound:\"off\" (Kling generates audio by default and ignores generate_audio/prompt wording - client rule is SILENT clips) and strip audio from every delivered mp4 with ffmpeg -an. A recipe run as written (its listed model, duration, rolls) is PRE-VALIDATED: preflight get_cost, state the cost, and run - the approval gate is for novel complex/premium builds. Use `rolls` (1 or 2) for the auto-judge pass and verify the `beats` are present (see SKILL.md > Auto-judge). `accent` is the one non-navy color allowed in that clip (warm only, NEVER green - green gets chroma-keyed out). `scriptureHook` is an optional tie-in for a Christian-coaching audience.",
   "globalImageStyle": "Flat 2D minimalist pictogram, solid dark navy #1A2238 figures (with optional WARM accent colors only, NEVER green) on a SOLID PURE SATURATED BRIGHT GREEN chroma-key background (#00B140, no yellow or cyan tint) and nothing else. CRITICAL: figures have NO FEET, legs end in plain rounded stumps, with no ground line and no shadow. Crisp flat edges, solid flat color fills, no shading, no gradients, no 3D, no outlines, no text, generous empty space. 16:9.",
   "globalMotionStyle": "Flat 2D minimalist motion-graphics animation, solid navy stick figures (NO FEET) on a SOLID UNIFORM PURE GREEN chroma-key background that stays perfectly flat and unchanged, flat vector style, snappy and clear with natural pacing, no slow motion. Crisp flat edges, no shading, no gradients, no 3D, no text, minimal camera movement.",
   "environmentalRecipes": ["light-of-the-world", "planting-a-seed", "narrow-gate"],
@@ -10,7 +10,7 @@
       "theme": "release, surrender, trust, anxiety",
       "scriptureHook": "1 Peter 5:7",
       "accent": "#E23B3B",
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 5, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "a navy stick figure standing, holding the string of a single bright RED balloon, looking up at it, with lots of open sky above.",
       "motionPrompt": "the figure opens its hand and releases the red balloon; the balloon floats gently and steadily up and away into the sky as the figure watches it rise, then the figure lowers its hand and stands calm.",
       "beats": ["figure holds the red balloon", "figure releases it", "balloon rises up and away", "figure watches, calm"]
@@ -21,10 +21,10 @@
       "theme": "perseverance, growth, pressing on, goals",
       "scriptureHook": "Philippians 3:14",
       "accent": "#E8A33B",
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 6, "rolls": 1,
-      "scenePrompt": "a navy stick figure standing at the BOTTOM of a tall flight of navy steps that climb up toward the TOP of the frame, with a small bright gold flag on a pole at the very top; clean minimal pale blue-grey scene.",
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
+      "scenePrompt": "a navy stick figure standing at the BOTTOM of a tall flight of navy steps that climb up toward the TOP of the frame, with a small bright gold flag on a pole at the very top.",
       "motionPrompt": "the figure climbs the navy staircase upward step by step with real effort, rising from the bottom all the way to the top, reaches the gold flag at the summit, and throws both arms up in triumph.",
-      "_tuned": "Validated. 9:16 (vertical suits the climb). Pick the plate with the clearer/steeper staircase + flag at top; name the 'reaches the flag, arms up' end-state so it summits instead of climbing past the buzzer.",
+      "_tuned": "Validated (16:9, the client-locked aspect). Pick the plate with the clearer/steeper staircase + flag at top; name the 'reaches the flag, arms up' end-state so it summits instead of climbing past the buzzer.",
       "beats": ["figure at the bottom", "climbing upward step by step", "reaches the top / flag", "arms up in triumph"]
     },
     {
@@ -33,7 +33,7 @@
       "theme": "burdens, stress, rest, surrender",
       "scriptureHook": "Matthew 11:28",
       "accent": null,
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 6, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "a navy stick figure hunched over and bent under a huge heavy boulder carried on its back, straining.",
       "motionPrompt": "the figure trudges slowly forward bent low under the huge heavy boulder, then lets the boulder roll off and drop to the ground, and straightens all the way up tall and light, relieved.",
       "beats": ["figure bent under the heavy weight", "sets the weight down", "stands up tall and relieved"]
@@ -44,7 +44,7 @@
       "theme": "freedom, breakthrough, addiction, bondage",
       "scriptureHook": "Galatians 5:1",
       "accent": null,
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 5, "rolls": 2,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 2,
       "scenePrompt": "a navy stick figure standing with thick heavy chains wrapped around both wrists, arms held apart and low, straining against them.",
       "motionPrompt": "the figure strains hard against the chains binding its wrists, then with a sudden burst the chains SNAP and break apart, links flying, and the figure throws both arms wide open, free.",
       "beats": ["figure bound by chains, straining", "chains snap and break apart", "arms thrown wide open, free"]
@@ -55,7 +55,7 @@
       "theme": "insight, revelation, clarity, ideas",
       "scriptureHook": "Proverbs 4:7",
       "accent": "#F2C53D",
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 4, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "a navy stick figure standing with one hand on its chin in a thinking pose, with empty open space directly above its head.",
       "motionPrompt": "the figure pauses, thinking, then a bright yellow lightbulb suddenly appears and switches on above its head with a glow; the figure looks up, points at the lightbulb, and perks up, energized.",
       "beats": ["figure thinking", "yellow lightbulb appears and glows above head", "figure reacts with energy"]
@@ -66,7 +66,7 @@
       "theme": "resilience, failure, getting back up, perseverance",
       "scriptureHook": "Proverbs 24:16",
       "accent": null,
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 6, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "a navy stick figure standing mid-stride as if walking forward confidently.",
       "motionPrompt": "the figure stumbles and falls down hard to the ground, lies there for a beat, then plants a hand, pushes itself back up off the ground, and stands tall again, steady and determined.",
       "beats": ["figure falls to the ground", "a beat of stillness", "pushes back up", "stands tall again"]
@@ -77,7 +77,7 @@
       "theme": "choices, the narrow path, integrity, discipleship",
       "scriptureHook": "Matthew 7:13-14",
       "accent": "#E8A33B",
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 6, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "a navy stick figure standing and facing two openings: a very WIDE open gateway on the left, and a small NARROW gate outlined in gold on the right.",
       "motionPrompt": "the figure glances at the wide gateway on the left, then turns and walks deliberately to the right and steps through the narrow gold gate, passing through to the other side.",
       "beats": ["figure between a wide gate and a narrow gate", "chooses the narrow gate", "walks through it"]
@@ -88,7 +88,7 @@
       "theme": "hope, being a light, influence, faith (Motivationeer brand tie-in)",
       "scriptureHook": "Matthew 5:14",
       "accent": "#F2C53D",
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 5, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 2,
       "scenePrompt": "a navy stick figure standing CENTERED and fairly large in a dim dark dusky grey-blue scene, holding a small unlit lantern raised in one hand, with dark empty space evenly around the figure.",
       "motionPrompt": "the figure raises its lantern and it lights up with a warm golden glow; warm light spreads outward from the lantern in soft flat rays, pushing back the darkness, and the whole background brightens into a clean bright pale blue-grey as the rays settle into a gentle warm glow around the lantern; the figure stays solid navy, only the lantern and its glow are warm yellow, and the scene ends clean and bright.",
       "_tuned": "Validated end-to-end. Name the clean pale-grey END state or the model defaults to a golden sunburst. Use a centered/larger figure plate so the light reads as coming from the figure. 2 takes, pick the cleanest.",
@@ -100,7 +100,7 @@
       "theme": "finishing well, perseverance, goals, endurance",
       "scriptureHook": "2 Timothy 4:7",
       "accent": "#E23B3B",
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 5, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "a navy stick figure in a running stance, with a horizontal RED finish-line ribbon stretched across the frame just ahead of it.",
       "motionPrompt": "the figure sprints forward hard and breaks through the red finish-line ribbon with its chest, the ribbon snapping away, then throws both arms up in victory.",
       "beats": ["figure sprinting toward the ribbon", "breaks through the red ribbon", "arms up in victory"]
@@ -111,7 +111,7 @@
       "theme": "grace, mentorship, community, being lifted up",
       "scriptureHook": "Ecclesiastes 4:10",
       "accent": null,
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 5, "rolls": 1,
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "two navy stick figures: on the LEFT one sitting fallen on the ground, slumped; on the RIGHT a second standing and leaning over, reaching one hand DOWN toward the fallen one's hand.",
       "motionPrompt": "the standing figure on the right reaches down, grasps the fallen figure's hand, and pulls it up off the ground onto its feet; the two end standing together side by side, warm and supportive.",
       "_tuned": "Validated. Generated as ONE two-figure scene image (no compose_scene needed). Pick the plate with a clear hand-to-hand reach across a small gap; name the 'both end standing together' end-state. Watch for tangled-legs takes mid-pull -> that's why count:2 + pick.",
@@ -122,11 +122,12 @@
       "title": "Planting a Seed",
       "theme": "small beginnings, faith, patience, growth",
       "scriptureHook": "Mark 4:30-32",
-      "accent": null,
-      "model": "kling3_0", "aspect": "16:9", "durationSec": 6, "rolls": 1,
+      "accent": "#E8A33B",
+      "model": "kling2_6", "aspect": "16:9", "durationSec": 5, "rolls": 1,
       "scenePrompt": "a navy stick figure crouched beside a small mound of soil on the ground, with open sky above.",
-      "motionPrompt": "the figure presses a seed into the soil and pats it, then stands back; a small green sprout pushes up out of the ground and grows upward into a little green tree as the figure watches.",
-      "beats": ["figure plants the seed", "a green sprout emerges", "it grows into a small tree", "figure watches"]
+      "motionPrompt": "the figure presses a seed into the soil and pats it, then stands back; a small GOLD sprout pushes up out of the ground and grows upward into a little gold tree as the figure watches. The sprout and tree are warm gold, never green.",
+      "beats": ["figure plants the seed", "a gold sprout emerges", "it grows into a small gold tree", "figure watches"],
+      "_note": "Sprout/tree must be GOLD, not green: on the green-screen default a green plant would be keyed out (and green accents are banned)."
     }
   ]
 }
