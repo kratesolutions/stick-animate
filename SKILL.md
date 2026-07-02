@@ -150,7 +150,9 @@ generate_video
   aspect_ratio: <aspect>         (generate natively in the requested aspect -> no letterbox)
   duration: per the model        (seedance1_5: 4/8/12; kling2_6: 5/10; veo3_1: 4/6/8; from defaultDurationSec, round to the model's nearest)
   + model params                 (kling2_6: sound:"off"; veo3_1: quality+variant from premiumModelParams)
-  generate_audio: false           (seedance + veo; KLING IGNORES this, it silences via sound:"off" above)
+  generate_audio: false           (seedance + veo; KLING IGNORES this, it silences via sound:"off" above.
+                                   CAUTION: veo3_1 FULL may ignore it too - only veo3_1_lite documents the
+                                   param - so the ffmpeg -an strip below is the only guarantee on premium)
   declined_preset_id: <declinedPresetId from brand.json>
   prompt: <guardrail template, below, wrapped around the action line>
   medias: [{role:"start_image", value:<start media_id>}]
