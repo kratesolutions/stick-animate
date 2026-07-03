@@ -127,9 +127,10 @@ Read the action line and classify:
   ```
   generate_image  model: nano_banana_2
     medias: [{role:"image", value:<start media_id from step 4>}]
-    prompt: "Exact same flat 2D minimalist navy stick figure on the exact same plain pale
-             grey background, redrawn in this pose: <END POSE>. Identical color, identical
-             line weight, flat vector, no shading, no 3D."
+    prompt: "Exact same flat 2D minimalist navy stick figure on the EXACT SAME background as
+             the reference image (unchanged color, unchanged coverage), redrawn in this pose:
+             <END POSE>. Identical character, identical proportions, identical line weight,
+             flat vector, no shading, no 3D."
   ```
   Poll the image job (see step 5 polling) and keep its job id as the end image.
   When unsure, treat it as SIMPLE (one shot).
@@ -206,10 +207,11 @@ QA: `scripts/qa_montage.ps1 -Video "<a final mp4>" -Out "_out/<slug>/qa.png"` an
   directed prompt): Seedance fumbled the ball-kick every take, while Kling 2.6 and Veo nailed the
   struck, flaming, flying ball.
 - NO SHEET for the subject (the client has no matching sheet): generate the figures or the whole
-  scene first with `generate_image` (nano_banana_2) in the brand style ("flat 2D pictogram, solid
-  navy #1A2238 figures and shapes on #D4D9E0, crisp flat edges, no shading, no 3D, no text"), then
-  animate that image (its job id works directly as start_image). The soccer clip in `_out/soccer-goal`
-  was made this way (generated player + ball + goal + goalie scene).
+  scene first with `generate_image` (nano_banana_2) using recipes.json `globalImageStyle` as the
+  style text, WITH the mascot/sheet-figure attached as a reference image + the STYLE LOCK line
+  (Prompting discipline, Rule 1 - never text-only), `count:2`, judge both plates against the sheet,
+  pick the closest. Then animate that image (its job id works directly as start_image). The soccer
+  clip in `_out/soccer-goal` was made this way (generated player + ball + goal + goalie scene).
 - PIN A PRECISE PAYOFF (a specific ending or gag the model keeps fumbling): build an explicit END
   frame of the final state with `generate_image` (pass the start as a reference image so the scene
   matches), then run the `complexModel` (kling2_6) with BOTH start_image and end_image so it must
@@ -217,13 +219,62 @@ QA: `scripts/qa_montage.ps1 -Video "<a final mp4>" -Out "_out/<slug>/qa.png"` an
   Note: in a one-color pictogram a detached head and a ball are both navy circles, so sell such gags
   through the BODY (e.g. a clearly headless figure), not the loose circle.
 
-## Guardrail prompt template
-Wrap the user's action line exactly like this so the look stays flat and on-model:
-> Flat 2D minimalist motion-graphics animation. The dark navy stick figure <ACTION>. Fast-paced,
-> snappy, no slow motion. Smooth clean flat vector style. Keep the background exactly as in the start
-> frame, perfectly flat and unchanged (green-screen clips: a SINGLE UNIFORM FLAT chroma green, no
-> horizon, no field, no two-tone, no gradient, edge to edge). Crisp flat edges, no shading,
-> no gradients, no 3D, no texture, no film grain, no camera movement.
+## Prompting discipline (style lock + choreography)
+The look is won at the PLATE; the motion is won by CHOREOGRAPHY. Two rules cover both.
+
+### Rule 1 - Style lock (every GENERATED plate)
+Image-to-video copies frame one, so consistency with the client's spec sheet is decided before any
+video credits are spent.
+- FROM A SHEET (default path): the figure comes from segment_sheet + prep_plate, pixel-true to the
+  client's own artwork. Nothing to lock.
+- GENERATED (no-sheet mode, recipes, new characters): NEVER generate a figure from text alone. ALWAYS
+  attach a style anchor as a reference image - brand.json `character` (the registered mascot) or a
+  clean figure cropped from the client's sheet - and say "match this exact character and drawing
+  style". Text-only plates are where the look drifts (outline vs filled, wrong head size, wrong line
+  weight).
+- Use ONE canonical style text: recipes.json `globalImageStyle` is the single source of truth for
+  every generated plate (recipe or not). Do not paraphrase it per clip - identical words in,
+  identical style out. Then append this STYLE LOCK line:
+  > Exactly match the reference figure: same proportions, same solid filled silhouette, same uniform
+  > line weight, same round head size, same rounded limb ends. Same character, same drawing style,
+  > redrawn in the new pose.
+- Plates are cheap (~1.5cr): generate `count:2`, judge BOTH against the sheet (proportions, line
+  weight, filled-vs-outline, head size, NO FEET, one flat green), pick the closest. If both drift,
+  reroll ONCE naming the miss ("thicker uniform strokes, smaller head"). Never animate a plate that
+  doesn't match - video credits spent on a drifted plate are wasted by definition.
+
+### Rule 2 - Choreograph the motion (every video prompt)
+Models invent weird dynamics when given OUTCOMES ("scores", "celebrates", "wins"). They behave when
+given MECHANICS in order: preparation -> execution -> result -> reaction, naming body parts and
+physics. Outcome words are allowed only AFTER the mechanics that produce them.
+
+Proven phrasings (adapt, keep the structure):
+- KICK / STRIKE: "plants the standing leg, swings the other leg through and STRIKES the ball cleanly;
+  the ball SHOOTS off the foot and flies fast and low toward <target>". Any effect is a SEPARATE,
+  LATER beat: contact first, ignition AFTER launch, the effect trailing the MOVING object only, never
+  bursting at the figure.
+- SLIDE: "while still moving forward, drops to its knees and SLIDES onward across the ground,
+  momentum carrying it, torso upright, arms raised".
+- JUMP: "bends the knees, EXPLODES upward off the ground, arms swinging overhead at the peak, then
+  lands and settles".
+- THROW: "winds back, whips the arm forward and RELEASES the object; it flies away fast on a clean arc".
+- FALL / RISE: "stumbles, tips forward and falls flat to the ground; a beat of stillness; plants a
+  hand and pushes back up to standing".
+Close EVERY motion prompt with the permanence + camera lines:
+- OBJECT PERMANENCE: name every object AND its end state ("the ball stays visible the whole time and
+  ends inside the net") - objects with no stated ending get dropped mid-clip.
+- IN FRAME / STILL CAMERA: "The figure stays fully in frame. No camera movement, no zoom, no cut.
+  The background never changes."
+- PACE: "fast-paced, snappy, no slow motion" for action; "smooth, gentle, steady" for calm clips.
+
+### The wrap template
+Wrap the choreographed action exactly like this so the look stays flat and on-model:
+> Flat 2D minimalist motion-graphics animation. The dark navy stick figure <CHOREOGRAPHED ACTION,
+> per Rule 2>. <PACE WORDS>. <OBJECT PERMANENCE line if any object>. The figure stays fully in frame.
+> Smooth clean flat vector style. Keep the background exactly as in the start frame, perfectly flat
+> and unchanged (green-screen clips: a SINGLE UNIFORM FLAT chroma green, no horizon, no field, no
+> two-tone, no gradient, edge to edge). Crisp flat edges, no shading, no gradients, no 3D, no
+> texture, no film grain, no camera movement, no zoom, no cut.
 
 ## Power features
 
@@ -258,6 +309,10 @@ as a reference when generating scenes/figures: `generate_image` with
 `medias:[{role:"image", value:<mascot media_id>}]` plus "match this exact character and style."
 Register or replace the mascot by saving a clean figure to `assets/character/mascot.*` (generate one,
 or pick a figure from a sheet via segment_sheet).
+DAY-ONE RULE: the moment a client provides a spec sheet, crop their best single figure with
+segment_sheet and register it as the mascot. From then on EVERY generated plate (recipes, no-sheet
+scenes, new characters) anchors to it, so generated figures stay consistent with the client's own
+sheet instead of the model's idea of a stick figure. (Prompting discipline, Rule 1.)
 
 ### Polish
 - Caption: `scripts/caption.ps1 -Video <in> -Out <out> -Text "..." [-Position bottom|top]` burns a
@@ -286,6 +341,13 @@ or pick a figure from a sheet via segment_sheet).
   Run `models_explore(action:'recommend')` with the goal, pick the current equivalent, and update brand.json.
 - Preset notice instead of a job: add `declined_preset_id` and retry (step 5).
 - Figure renders black, not navy: check `figureColor` in brand.json (default #1A2238).
+- Generated figure doesn't match the client's sheet (outline instead of filled, wrong head size or
+  line weight): the plate was generated text-only. Re-run with the mascot / a sheet figure attached
+  as a reference image + the STYLE LOCK line (Prompting discipline, Rule 1), count:2, pick the match.
+- Weird or floaty dynamics on an action (a kick that never connects, a slide that hovers): the prompt
+  described an OUTCOME, not the mechanics. Rewrite it as choreography (Rule 2): preparation ->
+  execution -> result -> reaction, name the body parts, state each object's end position, and keep
+  effects as a separate beat after contact.
 - Wrong figure picked from a grid: re-run with the correct index from `figures_grid.png`.
 - A pose drifts off-model on a big move: make sure you supplied an `end_image` (step 3),
   shorten to 4s, or switch to `fallbackModel`.
